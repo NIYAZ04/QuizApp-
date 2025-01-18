@@ -10,8 +10,7 @@ const App: React.FC = () => {
   const {
     questions,
     answers,
-    visitedQuestions,
-    attemptedQuestions,
+    
     timerExpired,
     currentQuestionIndex,
     onAnswerSelect,
