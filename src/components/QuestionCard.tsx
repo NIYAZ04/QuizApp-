@@ -1,4 +1,5 @@
 import React from 'react';
+import './QuestionCard.css';
 
 interface QuestionCardProps {
   question: string;
@@ -19,12 +20,12 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
 }) => {
   return (
     <div className="question-card">
-      <h3>{question}</h3>
+      <h2 className="question-text">{question}</h2>
       <div className="options">
         {options.map((option, index) => (
           <button
             key={index}
-            className={selectedAnswer === option ? 'selected' : ''}
+            className={`option-button ${selectedAnswer === option ? 'selected' : ''}`}
             onClick={() => onSelectAnswer(option)}
           >
             {option}
@@ -32,8 +33,12 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
         ))}
       </div>
       <div className="navigation">
-        <button onClick={onPrev}>Previous</button>
-        <button onClick={onNext}>Next</button>
+        <button onClick={onPrev} disabled={false} className="nav-button">
+          Previous
+        </button>
+        <button onClick={onNext} disabled={false} className="nav-button">
+          Next
+        </button>
       </div>
     </div>
   );

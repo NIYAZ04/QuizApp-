@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import HomeScreen from './HomeScreen';
-import QuestionCard from './QuestionCard';
-import Timer from './Timer';
-import Report from './Report';
-import useQuiz from './hooks/useQuiz';
+import React, { useState } from 'react';
+import HomeScreen from './components/HomeScreen';
+import QuestionCard from './components/QuestionCard';
+import Timer from './components/Timer';
+import Report from './components/Report';
+import useQuiz from './components/hooks/useQuiz';
 
 const App: React.FC = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -19,6 +19,7 @@ const App: React.FC = () => {
     onNext,
     onPrev,
     onTimeUp,
+    calculateScore,
   } = useQuiz();
 
   const handleSubmitEmail = (email: string) => {
@@ -29,21 +30,23 @@ const App: React.FC = () => {
     return <HomeScreen onSubmitEmail={handleSubmitEmail} />;
   }
 
+  // Handle the transition to the report page after 10 questions or timer expiry
+  if (questions.length > 0 && currentQuestionIndex >= 9 || timerExpired) {
+    return <Report score={calculateScore()} totalQuestions={questions.length} answers={answers} correctAnswers={questions.map(q => q.correctAnswer)} />;
+  }
+
   return (
     <div className="quiz-app">
       <h1>Welcome, {email}</h1>
       <Timer duration={1800} onTimeUp={onTimeUp} />
-      {!timerExpired && (
-        <QuestionCard
-          question={questions[currentQuestionIndex]?.question || ''}
-          options={questions[currentQuestionIndex]?.options || []}
-          selectedAnswer={answers[currentQuestionIndex]}
-          onSelectAnswer={(answer) => onAnswerSelect(currentQuestionIndex, answer)}
-          onNext={onNext}
-          onPrev={onPrev}
-        />
-      )}
-      {timerExpired && <Report score={calculateScore()} totalQuestions={questions.length} answers={answers} correctAnswers={correctAnswers} />}
+      <QuestionCard
+        question={questions[currentQuestionIndex]?.question || ''}
+        options={questions[currentQuestionIndex]?.options || []}
+        selectedAnswer={answers[currentQuestionIndex]}
+        onSelectAnswer={(answer) => onAnswerSelect(currentQuestionIndex, answer)}
+        onNext={onNext}
+        onPrev={onPrev}
+      />
     </div>
   );
 };
