@@ -1,4 +1,5 @@
-// api.ts
+import { decodeHtmlEntities } from './utils';
+
 export const fetchQuestions = async (retries: number = 3): Promise<any[]> => {
   try {
     const response = await fetch('https://opentdb.com/api.php?amount=15');
@@ -6,9 +7,9 @@ export const fetchQuestions = async (retries: number = 3): Promise<any[]> => {
 
     if (data.response_code === 0) {
       return data.results.map((item: any) => ({
-        question: item.question,
-        options: [...item.incorrect_answers, item.correct_answer],
-        correctAnswer: item.correct_answer,
+        question: decodeHtmlEntities(item.question), // Decode here
+        options: [...item.incorrect_answers.map(decodeHtmlEntities), decodeHtmlEntities(item.correct_answer)], // Decode options
+        correctAnswer: decodeHtmlEntities(item.correct_answer), // Decode the correct answer
       }));
     } else {
       throw new Error('Failed to fetch questions');
