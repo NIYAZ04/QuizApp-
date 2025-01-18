@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import HomeScreen from './HomeScreen';
+import QuestionCard from './QuestionCard';
+import Timer from './Timer';
+import Report from './Report';
+import useQuiz from './hooks/useQuiz';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [email, setEmail] = useState<string | null>(null);
+  const {
+    questions,
+    answers,
+    visitedQuestions,
+    attemptedQuestions,
+    timerExpired,
+    currentQuestionIndex,
+    onAnswerSelect,
+    onNavigate,
+    onNext,
+    onPrev,
+    onTimeUp,
+  } = useQuiz();
+
+  const handleSubmitEmail = (email: string) => {
+    setEmail(email);
+  };
+
+  if (!email) {
+    return <HomeScreen onSubmitEmail={handleSubmitEmail} />;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="quiz-app">
+      <h1>Welcome, {email}</h1>
+      <Timer duration={1800} onTimeUp={onTimeUp} />
+      {!timerExpired && (
+        <QuestionCard
+          question={questions[currentQuestionIndex]?.question || ''}
+          options={questions[currentQuestionIndex]?.options || []}
+          selectedAnswer={answers[currentQuestionIndex]}
+          onSelectAnswer={(answer) => onAnswerSelect(currentQuestionIndex, answer)}
+          onNext={onNext}
+          onPrev={onPrev}
+        />
+      )}
+      {timerExpired && <Report score={calculateScore()} totalQuestions={questions.length} answers={answers} correctAnswers={correctAnswers} />}
+    </div>
+  );
+};
 
-export default App
+export default App;
