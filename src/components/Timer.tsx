@@ -8,7 +8,7 @@ interface TimerProps {
 
 const Timer: React.FC<TimerProps> = ({ duration = 1800, onTimeUp }) => { // Default duration to 1800 seconds (30 minutes)
   const [timeLeft, setTimeLeft] = useState(duration);
-
+//Code is written by Mir Niyazul Haque
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
