@@ -14,7 +14,7 @@ const App: React.FC = () => {
     timerExpired,
     currentQuestionIndex,
     onAnswerSelect,
-    onNavigate,
+   
     onNext,
     onPrev,
     onTimeUp,
