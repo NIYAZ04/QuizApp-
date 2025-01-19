@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './Timer.css';
 
 interface TimerProps {
-  duration: number;
+  duration?: number; //optional
   onTimeUp: () => void;
 }
 
-const Timer: React.FC<TimerProps> = ({ duration, onTimeUp }) => {
+const Timer: React.FC<TimerProps> = ({ duration = 1800, onTimeUp }) => { // Default duration to 1800 seconds (30 minutes)
   const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
@@ -24,7 +24,14 @@ const Timer: React.FC<TimerProps> = ({ duration, onTimeUp }) => {
     return () => clearInterval(timer);
   }, [onTimeUp]);
 
-  return <div className="timer">Time left: {timeLeft}s</div>;
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return <div className="timer">Time left: {formatTime(timeLeft)}</div>;
 };
 
 export default Timer;
